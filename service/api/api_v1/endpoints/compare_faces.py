@@ -1,7 +1,7 @@
 from typing import Any
 
-from fastapi import APIRouter, UploadFile, File, HTTPException
 import face_recognition
+from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from service.core.utils import allowed_file
 from service.schemas.authentication import Authentication
@@ -22,7 +22,9 @@ async def compare_faces(
             known_image_encoding = face_recognition.face_encodings(known)[0]
             unknown_encoding = face_recognition.face_encodings(unknown)[0]
 
-            result = face_recognition.compare_faces([known_image_encoding], unknown_encoding, tolerance=0.43)
+            result = face_recognition.compare_faces(
+                [known_image_encoding], unknown_encoding, tolerance=0.50
+            )
             if len(result):
                 return Authentication(is_authenticated=result[0])
             else:
