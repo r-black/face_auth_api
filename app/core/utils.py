@@ -1,4 +1,4 @@
-from service.core.constants import ALLOWED_EXTENSIONS
+from app.core.constants import ALLOWED_EXTENSIONS
 
 
 def allowed_file(filename):

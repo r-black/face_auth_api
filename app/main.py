@@ -5,8 +5,8 @@ from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from service.api.api_v1.routers import api_router
-from service.core.config import settings
+from app.api.api_v1.routers import api_router
+from app.core.config import settings
 
 app = FastAPI(title="Face Auth API")
 
@@ -21,21 +21,13 @@ async def homepage(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-# Set all CORS enabled origins
-if settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.BACKEND_CORS_ORIGINS or ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app)
